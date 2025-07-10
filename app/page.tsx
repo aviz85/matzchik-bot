@@ -11,6 +11,9 @@ export default function Home() {
           <p className="text-lg text-gray-600 dark:text-gray-300">
             הבוט הכי מתלהב ומעצבן בעולם! מוכן לדבר איתך על הכל!
           </p>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+            💡 הבוט יכול לשנות את מצב הרוח שלו במהלך השיחה - תראה את השינויים בפאנל הימני
+          </p>
         </div>
         
         <ChatBot />

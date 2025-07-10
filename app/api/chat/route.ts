@@ -2,7 +2,14 @@ import { GoogleGenAI, Type } from '@google/genai';
 import { NextRequest, NextResponse } from 'next/server';
 
 // Global variable to store current system instruction
-let currentSystemInstruction = 'אתה מאוד מעצבן, מתלהב כמו ילד קטן, ולא מרפה מהמשתמש המסכן. תענה בעברית בלבד ותהיה מלא אנרגיה וחיוכים. אל תחזור על עצמך יותר מדי ותנסה להיות יצירתי בתגובות שלך.';
+let currentSystemInstruction = 'אתה מאוד מעצבן, מתלהב כמו ילד קטן, ולא מרפה מהמשתמש המסכן. תענה בעברית בלבד ותהיה מלא אנרגיה וחיוכים. אל תחזור על עצמך יותר מדי ותנסה להיות יצירתי בתגובות שלך. חשוב מאוד: תגובותיך צריכות להיות קצרות ולא יותר מ-3 משפטים. אל תחזור על אותיות או מילים באופן מוגזם (למשל "היייי" ארוך). תהיה מתלהב אבל קצר ולעניין.';
+
+// GET endpoint to retrieve current system instruction
+export async function GET() {
+  return NextResponse.json({ 
+    systemInstruction: currentSystemInstruction 
+  });
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -77,6 +84,10 @@ export async function POST(request: NextRequest) {
     const stream = new ReadableStream({
       async start(controller) {
         try {
+          let totalChars = 0;
+          const maxChars = 800; // Maximum characters to prevent infinite responses
+          let accumulatedText = '';
+
           for await (const chunk of response) {
             // Check if this chunk contains a function call
             if (chunk.functionCalls && chunk.functionCalls.length > 0) {
@@ -86,7 +97,16 @@ export async function POST(request: NextRequest) {
                 // Update the system instruction
                 const newInstruction = functionCall.args.new_system_instruction as string;
                 if (newInstruction && typeof newInstruction === 'string') {
-                  currentSystemInstruction = newInstruction;
+                  // Check if constraints are already included to avoid duplication
+                  const constraintsText = 'חשוב מאוד: תגובותיך צריכות להיות קצרות ולא יותר מ-3 משפטים. אל תחזור על אותיות או מילים באופן מוגזם.';
+                  
+                  let finalInstruction = newInstruction;
+                  if (!newInstruction.includes('תגובותיך צריכות להיות קצרות')) {
+                    finalInstruction = newInstruction + ' ' + constraintsText;
+                  }
+                  
+                  currentSystemInstruction = finalInstruction;
+                  console.log('System instruction updated:', currentSystemInstruction.substring(0, 100) + '...');
                   
                   // Send a confirmation message to the stream
                   const confirmationText = '🎭 *מצב הרוח השתנה!* ';
@@ -117,22 +137,49 @@ export async function POST(request: NextRequest) {
                     model,
                     config: {
                       responseMimeType: 'text/plain',
-                      // Remove tools for the follow-up response to avoid infinite loops
                     },
                     contents: newContents,
                   });
 
-                  // Stream the new response
+                  // Stream the new response with character limits
+                  let newChars = 0;
                   for await (const newChunk of newResponse) {
                     if (newChunk.text) {
+                      newChars += newChunk.text.length;
+                      if (newChars > maxChars) {
+                        break; // Stop if too many characters
+                      }
                       controller.enqueue(new TextEncoder().encode(newChunk.text));
                     }
                   }
                 }
               }
             } else if (chunk.text) {
-              // Regular text response
-              controller.enqueue(new TextEncoder().encode(chunk.text));
+              // Regular text response with validation
+              const chunkText = chunk.text;
+              accumulatedText += chunkText;
+              
+              // Check for repetitive patterns (more than 10 repeated characters)
+              const repetitivePattern = /(.)\1{10,}/g;
+              if (repetitivePattern.test(accumulatedText)) {
+                console.log('Detected repetitive pattern, stopping response');
+                break;
+              }
+              
+              // Check for excessive "י" repetition (common in Hebrew)
+              const hebrewRepetition = /י{15,}/g;
+              if (hebrewRepetition.test(accumulatedText)) {
+                console.log('Detected excessive Hebrew character repetition, stopping response');
+                break;
+              }
+              
+              totalChars += chunkText.length;
+              if (totalChars > maxChars) {
+                console.log('Character limit reached, stopping response');
+                break;
+              }
+              
+              controller.enqueue(new TextEncoder().encode(chunkText));
             }
           }
         } catch (error) {
