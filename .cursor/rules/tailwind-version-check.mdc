@@ -1,0 +1,28 @@
+# Tailwind CSS Version Detection
+
+## Automatic Tailwind Version Check
+
+When working with any project, automatically check for Tailwind CSS:
+
+1. **Check package.json** for Tailwind CSS dependencies
+2. **If Tailwind is found**, determine the version:
+   - Version 4.x.x = Use v4 patterns and Context7 learning
+   - Version 3.x.x = Use v3 patterns
+   - Version 2.x.x or below = Use legacy patterns
+
+3. **For v4 projects specifically**:
+   - MUST use Context7 to learn current v4 syntax
+   - MUST NOT apply v3 configuration patterns
+   - MUST read existing CSS files to understand current setup
+
+## Files to Check for Tailwind Usage
+
+- [package.json](mdc:package.json) - Check dependencies
+- [postcss.config.mjs](mdc:postcss.config.mjs) or [postcss.config.js](mdc:postcss.config.js) - PostCSS setup
+- [tailwind.config.js](mdc:tailwind.config.js) or [tailwind.config.ts](mdc:tailwind.config.ts) - Legacy config
+- [app/globals.css](mdc:app/globals.css) or [styles/globals.css](mdc:styles/globals.css) - CSS imports
+- [vite.config.ts](mdc:vite.config.ts) or [vite.config.js](mdc:vite.config.js) - Vite configuration
+
+## Action Required
+
+If Tailwind v4 is detected, immediately use Context7 tools to learn the current v4 syntax before making any suggestions or changes.

@@ -1,0 +1,187 @@
+---
+alwaysApply: false
+---
+# Tailwind CSS v4 Common Mistakes Prevention
+
+## Critical: DO NOT Use These v3 Patterns in v4 Projects
+
+### ❌ WRONG (v3 patterns that DON'T work in v4):
+
+```css
+/* OLD v3 imports - DON'T USE */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+```javascript
+// OLD v3 PostCSS config - DON'T USE
+module.exports = {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+  },
+}
+```
+
+```javascript
+// OLD v3 JavaScript config - DON'T USE
+module.exports = {
+  content: ['./src/**/*.{js,jsx,ts,tsx}'],
+  theme: {
+    extend: {
+      colors: {
+        primary: '#3b82f6',
+      },
+    },
+  },
+  plugins: [],
+}
+```
+
+### ✅ CORRECT (v4 patterns):
+
+```css
+/* NEW v4 import */
+@import "tailwindcss";
+
+/* NEW v4 theme configuration */
+@theme {
+  --color-primary: #3b82f6;
+  --font-display: "Inter", sans-serif;
+}
+```
+
+```javascript
+// NEW v4 PostCSS config
+export default {
+  plugins: {
+    "@tailwindcss/postcss": {},
+  },
+};
+```
+
+## Utility Class Changes in v4
+
+### Shadow utilities:
+- `shadow-sm` → `shadow-xs`
+- `shadow` → `shadow-sm`
+
+### Blur utilities:
+- `blur-sm` → `blur-xs`
+- `blur` → `blur-sm`
+
+### Rounded utilities:
+- `rounded-sm` → `rounded-xs`
+- `rounded` → `rounded-sm`
+
+### CSS Variables:
+- `bg-[--my-var]` → `bg-(--my-var)`
+
+## Detection Rules
+
+If you see ANY of these patterns in a v4 project, immediately flag them as needing updates:
+
+1. `@tailwind` directives in CSS files
+2. `tailwindcss: {}` in PostCSS config (should be `@tailwindcss/postcss`)
+3. JavaScript-based tailwind.config.js files (should use CSS `@theme`)
+4. Old shadow/blur/rounded utility names
+
+## Required Action
+
+Before suggesting any Tailwind configuration changes, ALWAYS:
+1. Check if this is a v4 project
+2. Use Context7 to learn current v4 patterns
+3. Never suggest v3 patterns for v4 projects
+# Tailwind CSS v4 Common Mistakes Prevention
+
+## Critical: DO NOT Use These v3 Patterns in v4 Projects
+
+### ❌ WRONG (v3 patterns that DON'T work in v4):
+
+```css
+/* OLD v3 imports - DON'T USE */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+```javascript
+// OLD v3 PostCSS config - DON'T USE
+module.exports = {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+  },
+}
+```
+
+```javascript
+// OLD v3 JavaScript config - DON'T USE
+module.exports = {
+  content: ['./src/**/*.{js,jsx,ts,tsx}'],
+  theme: {
+    extend: {
+      colors: {
+        primary: '#3b82f6',
+      },
+    },
+  },
+  plugins: [],
+}
+```
+
+### ✅ CORRECT (v4 patterns):
+
+```css
+/* NEW v4 import */
+@import "tailwindcss";
+
+/* NEW v4 theme configuration */
+@theme {
+  --color-primary: #3b82f6;
+  --font-display: "Inter", sans-serif;
+}
+```
+
+```javascript
+// NEW v4 PostCSS config
+export default {
+  plugins: {
+    "@tailwindcss/postcss": {},
+  },
+};
+```
+
+## Utility Class Changes in v4
+
+### Shadow utilities:
+- `shadow-sm` → `shadow-xs`
+- `shadow` → `shadow-sm`
+
+### Blur utilities:
+- `blur-sm` → `blur-xs`
+- `blur` → `blur-sm`
+
+### Rounded utilities:
+- `rounded-sm` → `rounded-xs`
+- `rounded` → `rounded-sm`
+
+### CSS Variables:
+- `bg-[--my-var]` → `bg-(--my-var)`
+
+## Detection Rules
+
+If you see ANY of these patterns in a v4 project, immediately flag them as needing updates:
+
+1. `@tailwind` directives in CSS files
+2. `tailwindcss: {}` in PostCSS config (should be `@tailwindcss/postcss`)
+3. JavaScript-based tailwind.config.js files (should use CSS `@theme`)
+4. Old shadow/blur/rounded utility names
+
+## Required Action
+
+Before suggesting any Tailwind configuration changes, ALWAYS:
+1. Check if this is a v4 project
+2. Use Context7 to learn current v4 patterns
+3. Never suggest v3 patterns for v4 projects

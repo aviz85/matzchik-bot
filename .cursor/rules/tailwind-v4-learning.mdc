@@ -1,0 +1,68 @@
+---
+description: "Tailwind CSS v4 learning and best practices"
+globs: "*.css,*.tsx,*.ts,*.jsx,*.js,package.json,postcss.config.*,tailwind.config.*"
+---
+
+# Tailwind CSS v4 Learning Rule
+
+## Critical Instructions for Tailwind CSS Projects
+
+When working with any project that uses Tailwind CSS, you MUST:
+
+1. **Always check the Tailwind version first** by examining [package.json](mdc:package.json)
+
+2. **If Tailwind v4 is detected** (version 4.x.x), you MUST:
+   - Use the `mcp_context7_resolve-library-id` tool to find Tailwind CSS v4 documentation
+   - Use the `mcp_context7_get-library-docs` tool to learn current v4 syntax and patterns
+   - Focus on topics like: "v4 configuration", "v4 installation", "v4 upgrade guide", "v4 syntax changes"
+
+3. **Key v4 Changes to Remember:**
+   - Use `@import "tailwindcss";` instead of `@tailwind base; @tailwind components; @tailwind utilities;`
+   - Configuration is now done in CSS using `@theme` instead of JavaScript config files
+   - Use `@utility` instead of `@layer utilities` for custom utilities
+   - PostCSS plugin is now `@tailwindcss/postcss` instead of `tailwindcss`
+   - Vite plugin is now `@tailwindcss/vite`
+   - Some utility names have changed (e.g., `shadow-sm` → `shadow-xs`, `shadow` → `shadow-sm`)
+   - CSS variables syntax changed from `bg-[--var]` to `bg-(--var)`
+   - Default colors and behaviors have changed
+
+4. **Never apply v3 patterns to v4 projects** without first learning the v4 equivalent
+
+5. **Always read existing config files** like [postcss.config.mjs](mdc:postcss.config.mjs) or [app/globals.css](mdc:app/globals.css) to understand the current setup
+
+## Example v4 Patterns
+
+### CSS Import (v4)
+```css
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #3b82f6;
+  --font-display: "Inter", sans-serif;
+}
+```
+
+### PostCSS Config (v4)
+```javascript
+export default {
+  plugins: {
+    "@tailwindcss/postcss": {},
+  },
+};
+```
+
+### Vite Config (v4)
+```javascript
+import tailwindcss from '@tailwindcss/vite'
+
+export default defineConfig({
+  plugins: [tailwindcss()],
+})
+```
+
+## Enforcement
+
+- **ALWAYS** use Context7 to learn v4 patterns before making changes
+- **NEVER** assume v3 syntax will work in v4
+- **ALWAYS** check the project's current Tailwind setup before suggesting changes
+- **PRIORITIZE** v4 documentation over general Tailwind knowledge
